@@ -3,6 +3,8 @@ using AutoMapper.QueryableExtensions;
 using E_Commerce.Domian.Entites.ProductModule;
 using E_Commerce.Domian.Interfaces;
 using E_Commerce.Service.Abstraction.Interfaces;
+using E_Commerce.Service.Implementation.Specifications;
+using E_Commerce.Shared.DTOs;
 using E_Commerce.Shared.DTOs.ProductDTOs;
 using System;
 using System.Collections.Generic;
@@ -22,11 +24,25 @@ namespace E_Commerce.Service.Implementation.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<IEnumerable<ProductDTO>> GetAllProductsAsync()
+        public async Task<PaginateResult<ProductDTO>> GetAllProductsAsync(ProductQueryParams productQueryParams)
         {
-            var products = await _unitOfWork.GetRepository<Product>().GetAllAsync();
+            var spec = new ProductWithBrandAndTypeSpecification(productQueryParams);
 
-            return _mapper.Map<IEnumerable<ProductDTO>>(products);
+            var repo = _unitOfWork.GetRepository<Product>();
+            var products = await repo.GetAllAsync(spec);
+
+            var data = _mapper.Map<IEnumerable<ProductDTO>>(products);
+
+            var paginateResult = new PaginateResult<ProductDTO>
+            {
+                Page = productQueryParams.Page,
+                PageSize = productQueryParams.PageSize,
+                ItemsCount = data.Count(),
+                Data = data,
+                TotalCount = await repo.CountAsync(spec)
+            };
+
+            return paginateResult;
         }
         public async Task<IEnumerable<ProductBrandDTO>> GetAllProductBrandsAsync()
         {
@@ -42,7 +58,8 @@ namespace E_Commerce.Service.Implementation.Services
         }
         public async Task<ProductDTO> GetProductByIdAsync(Guid id)
         {
-            var product = await _unitOfWork.GetRepository<Product>().GetByIdAsync(id);
+            var spec = new ProductWithBrandAndTypeSpecification(id);
+            var product = await _unitOfWork.GetRepository<Product>().GetByIdAsync(spec);
 
             return _mapper.Map<ProductDTO>(product);
         }

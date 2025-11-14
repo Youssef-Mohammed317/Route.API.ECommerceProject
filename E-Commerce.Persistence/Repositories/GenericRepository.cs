@@ -28,10 +28,28 @@ namespace E_Commerce.Persistence.Repositories
         {
             return await _dbContext.Set<TEntity>().AsNoTracking().ToListAsync();
         }
+        public async Task<int> CountAsync(ISpecification<TEntity> specification)
+        {
+            var query = SpecificationEvaluater.CreateCountQuery(_dbContext.Set<TEntity>(), specification);
+
+            return await query.CountAsync();
+        }
+        public async Task<IEnumerable<TEntity>> GetAllAsync(ISpecification<TEntity> specification)
+        {
+            var query = SpecificationEvaluater.CreateQuery(_dbContext.Set<TEntity>(), specification);
+
+            return await query.AsNoTracking().ToListAsync();
+        }
 
         public async Task<TEntity> GetByIdAsync(Guid id)
         {
             return (await _dbContext.Set<TEntity>().FirstOrDefaultAsync(e => e.Id == id))!;
+        }
+        public async Task<TEntity> GetByIdAsync(ISpecification<TEntity> specification)
+        {
+            var query = SpecificationEvaluater.CreateQuery(_dbContext.Set<TEntity>(), specification);
+
+            return (await query.FirstOrDefaultAsync())!;
         }
 
         public void Remove(TEntity entity)

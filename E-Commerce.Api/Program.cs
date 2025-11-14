@@ -34,7 +34,8 @@ namespace E_Commerce.Presentation.Api
             builder.Services.AddDbContext<StoreDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("StoreDbConnection"))
-                .UseLazyLoadingProxies();
+                //.UseLazyLoadingProxies()
+                ;
             });
             #endregion
 

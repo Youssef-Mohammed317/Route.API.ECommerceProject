@@ -10,7 +10,10 @@ namespace E_Commerce.Domian.Interfaces
     public interface IGenericRepository<TEntity> where TEntity : BaseEntity
     {
         Task<IEnumerable<TEntity>> GetAllAsync();
+        Task<IEnumerable<TEntity>> GetAllAsync(ISpecification<TEntity> specification);
+        Task<int> CountAsync(ISpecification<TEntity> specification);
         Task<TEntity> GetByIdAsync(Guid id);
+        Task<TEntity> GetByIdAsync(ISpecification<TEntity> specification);
         Task<TEntity> AddAsync(TEntity entity);
         void Remove(TEntity entity);
         void Update(TEntity entity);
