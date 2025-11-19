@@ -10,6 +10,7 @@ using E_Commerce.Service.Implementation.MappingProfiles.ProductModule;
 using E_Commerce.Service.Implementation.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using StackExchange.Redis;
 using System.Threading.Tasks;
 
 namespace E_Commerce.Presentation.Api
@@ -37,12 +38,23 @@ namespace E_Commerce.Presentation.Api
                 //.UseLazyLoadingProxies()
                 ;
             });
+            builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
+            {
+                var options = ConfigurationOptions.Parse(
+                    builder.Configuration.GetConnectionString("RedisConnection")!
+                );
+                options.Ssl = true;
+
+                return ConnectionMultiplexer.Connect(options);
+            });
             #endregion
 
             #region Services
             builder.Services.AddScoped<IDataInitializer, DataInitializer>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<IBasketService, BasketService>();
+            builder.Services.AddScoped<IBasketRepository, BasketRepository>();
             builder.Services.AddAutoMapper(config =>
             {
                 config.AddMaps(typeof(ProductModuleProfile).Assembly);
