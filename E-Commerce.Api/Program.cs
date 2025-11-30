@@ -1,15 +1,19 @@
 ﻿
 using E_Commerce.Api.Factories;
 using E_Commerce.Api.Middleware;
+using E_Commerce.Domian.Entites.IdentityModule;
 using E_Commerce.Domian.Interfaces;
 using E_Commerce.Persistence.Data.DbContexts;
 using E_Commerce.Persistence.Data.Migrations;
 using E_Commerce.Persistence.Data.SeedData;
+using E_Commerce.Persistence.IdentityData.DbContexts;
+using E_Commerce.Persistence.IdentityData.SeedData;
 using E_Commerce.Persistence.Repositories;
 using E_Commerce.Presentation.Api.Extensions;
 using E_Commerce.Service.Abstraction.Interfaces;
 using E_Commerce.Service.Implementation.MappingProfiles.ProductModule;
 using E_Commerce.Service.Implementation.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -52,16 +56,32 @@ namespace E_Commerce.Presentation.Api
 
                 return ConnectionMultiplexer.Connect(options);
             });
+            builder.Services.AddDbContext<StoreIdentityDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityDbConnection"));
+            });
+            builder.Services.AddIdentityCore<ApplicationUser>(opt =>
+            {
+                opt.Password.RequireNonAlphanumeric = false;
+                opt.Password.RequiredLength = 6;
+                opt.Password.RequireLowercase = false;
+                opt.Password.RequireDigit = false;
+                opt.Password.RequireUppercase = false;
+            })
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<StoreIdentityDbContext>();
             #endregion
 
             #region Services
-            builder.Services.AddScoped<IDataInitializer, DataInitializer>();
+            builder.Services.AddKeyedScoped<IDataInitializer, DataInitializer>("default");
+            builder.Services.AddKeyedScoped<IDataInitializer, IdentityDataInitializer>("identity");
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IBasketService, BasketService>();
             builder.Services.AddScoped<IBasketRepository, BasketRepository>();
             builder.Services.AddScoped<ICacheRepository, CacheRepository>();
             builder.Services.AddScoped<ICacheService, CacheService>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddAutoMapper(config =>
             {
                 config.AddMaps(typeof(ProductModuleProfile).Assembly);
@@ -83,8 +103,10 @@ namespace E_Commerce.Presentation.Api
 
             #region Data-Seed & Apply Migrations
 
-            await app.MigrateDatabaseAsync();
-            await app.SeedDataAsync();
+            await app.MigrateDatabaseAsync<StoreDbContext>();
+            await app.MigrateDatabaseAsync<StoreIdentityDbContext>();
+            await app.SeedDataAsync("default");
+            await app.SeedDataAsync("identity");
 
             #endregion
 
