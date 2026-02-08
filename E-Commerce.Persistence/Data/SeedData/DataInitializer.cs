@@ -1,4 +1,5 @@
 ﻿using E_Commerce.Domian.Entites;
+using E_Commerce.Domian.Entites.OrderModule;
 using E_Commerce.Domian.Entites.ProductModule;
 using E_Commerce.Domian.Interfaces;
 using E_Commerce.Persistence.Data.DbContexts;
@@ -28,26 +29,34 @@ namespace E_Commerce.Persistence.Data.SeedData
                 var hasProducts = await _dbContext.Products.AnyAsync();
                 var hasProductBrands = await _dbContext.ProductBrands.AnyAsync();
                 var hasProductTypes = await _dbContext.ProductTypes.AnyAsync();
+                var hasDeliveryMethods = await _dbContext.DeliveryMethods.AnyAsync();
 
 
-                if (hasProducts && hasProductBrands && hasProductTypes) return;
+                if (hasProducts && hasProductBrands && hasProductTypes && hasDeliveryMethods) return;
 
                 var basePath = Path.Combine(AppContext.BaseDirectory, "Data", "SeedData", "Files");
 
                 if (!hasProductBrands)
                 {
-                    await SeedDataFromJsonAsync(Path.Combine(basePath, "brands.json"), _dbContext.ProductBrands);
+                    await SeedDataFromJsonAsync<ProductBrand, int>(Path.Combine(basePath, "brands.json"), _dbContext.ProductBrands);
                 }
                 if (!hasProductTypes)
                 {
-                    await SeedDataFromJsonAsync(Path.Combine(basePath, "types.json"), _dbContext.ProductTypes);
+                    await SeedDataFromJsonAsync<ProductType, int>(Path.Combine(basePath, "types.json"), _dbContext.ProductTypes);
                 }
                 await _dbContext.SaveChangesAsync();
                 if (!hasProducts)
                 {
-                    await SeedDataFromJsonAsync(Path.Combine(basePath, "products.json"), _dbContext.Products);
+                    await SeedDataFromJsonAsync<Product, int>(Path.Combine(basePath, "products.json"), _dbContext.Products);
                 }
                 await _dbContext.SaveChangesAsync();
+                if (!hasDeliveryMethods)
+                {
+                    await SeedDataFromJsonAsync<DeliveryMethod, int>(Path.Combine(basePath, "delivery.json"), _dbContext.DeliveryMethods);
+                }
+                await _dbContext.SaveChangesAsync();
+
+
 
             }
             catch (Exception ex)
@@ -55,13 +64,12 @@ namespace E_Commerce.Persistence.Data.SeedData
                 Console.WriteLine(ex.Message);
             }
         }
-        private async Task SeedDataFromJsonAsync<TEnitiy>(string filePath, DbSet<TEnitiy> entity) where TEnitiy : BaseEntity
+        private async Task SeedDataFromJsonAsync<TEnitiy, TKey>(string filePath, DbSet<TEnitiy> entity) where TEnitiy : BaseEntity<TKey>
         {
             if (!File.Exists(filePath)) throw new FileNotFoundException();
 
             try
             {
-                //var jsonString = File.ReadAllText(filePath);
 
                 using var reader = File.OpenRead(filePath);
 

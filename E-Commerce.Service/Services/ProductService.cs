@@ -30,14 +30,14 @@ namespace E_Commerce.Service.Implementation.Services
         {
             var spec = new ProductWithBrandAndTypeSpecification(productQueryParams);
 
-            var repo = _unitOfWork.GetRepository<Product>();
+            var repo = _unitOfWork.GetRepository<Product, int>();
             var products = await repo.GetAllAsync(spec);
 
             var data = _mapper.Map<IEnumerable<ProductDTO>>(products);
 
             var paginateResult = new PaginateResult<ProductDTO>
             {
-                Page = productQueryParams.Page,
+                Page = productQueryParams.PageIndex,
                 PageSize = productQueryParams.PageSize,
                 ItemsCount = data.Count(),
                 Data = data,
@@ -48,20 +48,20 @@ namespace E_Commerce.Service.Implementation.Services
         }
         public async Task<Result<IEnumerable<ProductBrandDTO>>> GetAllProductBrandsAsync()
         {
-            var brands = await _unitOfWork.GetRepository<ProductBrand>().GetAllAsync();
+            var brands = await _unitOfWork.GetRepository<ProductBrand, int>().GetAllAsync();
 
             return Result<IEnumerable<ProductBrandDTO>>.Ok(_mapper.Map<IEnumerable<ProductBrandDTO>>(brands));
         }
         public async Task<Result<IEnumerable<ProductTypeDTO>>> GetAllProductTypesAsync()
         {
-            var types = await _unitOfWork.GetRepository<ProductType>().GetAllAsync();
+            var types = await _unitOfWork.GetRepository<ProductType, int>().GetAllAsync();
 
             return Result<IEnumerable<ProductTypeDTO>>.Ok(_mapper.Map<IEnumerable<ProductTypeDTO>>(types));
         }
-        public async Task<Result<ProductDTO>> GetProductByIdAsync(Guid id)
+        public async Task<Result<ProductDTO>> GetProductByIdAsync(int id)
         {
             var spec = new ProductWithBrandAndTypeSpecification(id);
-            var product = await _unitOfWork.GetRepository<Product>().GetByIdAsync(spec);
+            var product = await _unitOfWork.GetRepository<Product, int>().GetByIdAsync(spec);
 
             if (product is null)
             {

@@ -33,5 +33,7 @@ namespace E_Commerce.Persistence.IdentityData.DbContexts
                 .WithOne(b => b.User)
                 .HasForeignKey<Address>(b => b.UserId);
         }
+        public DbSet<Address> Addresses { get; set; }
+
     }
 }

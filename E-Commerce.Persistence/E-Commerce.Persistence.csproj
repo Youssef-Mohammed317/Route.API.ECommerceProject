@@ -36,4 +36,10 @@
     <ProjectReference Include="..\E-Commerce.Domian\E-Commerce.Domian.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Data\SeedData\Files\delivery.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

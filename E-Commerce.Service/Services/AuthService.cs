@@ -1,8 +1,13 @@
 ﻿using E_Commerce.Domian.Entites.IdentityModule;
+using E_Commerce.Domian.Entites.OrderModule;
+using E_Commerce.Domian.Interfaces;
+using E_Commerce.Domian.Interfaces.Identity;
 using E_Commerce.Service.Abstraction.Interfaces;
 using E_Commerce.Shared.Common;
 using E_Commerce.Shared.DTOs.AuthDTOs;
+using E_Commerce.Shared.DTOs.OrderDTOs;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -20,11 +25,13 @@ namespace E_Commerce.Service.Implementation.Services
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly IAddressRepository _addressRepository;
 
-        public AuthService(UserManager<ApplicationUser> userManager, IConfiguration configuration)
+        public AuthService(UserManager<ApplicationUser> userManager, IConfiguration configuration, IAddressRepository addressRepository)
         {
             _userManager = userManager;
             this._configuration = configuration;
+            this._addressRepository = addressRepository;
         }
         public async Task<Result<UserDTO>> LoginAsync(LoginDTO loginDTO)
         {
@@ -100,6 +107,51 @@ namespace E_Commerce.Service.Implementation.Services
             return Result<UserDTO>.Ok(userDTO);
         }
 
+        public async Task<Result<ShippingAddressDto>> GetCurrentUserAddress(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return Result<ShippingAddressDto>.Fail(Error.NotFound("User not found"));
+            }
+            ;
+
+            var address = await _addressRepository.GetAddressAsync(user.Id);
+
+            var ShippingAddress = new ShippingAddressDto
+            {
+                FirstName = address?.FirstName ?? "",
+                LastName = address?.LastName ?? "",
+                City = address?.City ?? "",
+                Country = address?.Country ?? "",
+                Street = address?.Street ?? "",
+            };
+            return Result<ShippingAddressDto>.Ok(ShippingAddress);
+        }
+        public async Task<Result<ShippingAddressDto>> CreateOrUpdateAddresss(ShippingAddressDto shippingAddressDto, string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return Result<ShippingAddressDto>.Fail(Error.NotFound("User not found"));
+            }
+            ;
+
+
+            var address = new Address
+            {
+                FirstName = shippingAddressDto.FirstName,
+                LastName = shippingAddressDto.LastName,
+                City = shippingAddressDto.City,
+                Country = shippingAddressDto.Country,
+                Street = shippingAddressDto.Street,
+
+            };
+            await _addressRepository.CreateOrUpdateAddressAsync(user.Id, address);
+
+
+            return Result<ShippingAddressDto>.Ok(shippingAddressDto);
+        }
         private async Task<string> GenterateTokenAsync(ApplicationUser user)
         {
             var claims = new List<Claim>

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace E_Commerce.Domian.Entites.ProductModule
 {
-    public class ProductType : BaseEntity
+    public class ProductType : BaseEntity<int>
     {
         public string Name { get; set; } = null!;
 

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace E_Commerce.Persistence.Repositories
 {
-    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : BaseEntity
+    public class GenericRepository<TEntity, TKey> : IGenericRepository<TEntity, TKey> where TEntity : BaseEntity<TKey>
     {
         private readonly StoreDbContext _dbContext;
 
@@ -28,24 +28,24 @@ namespace E_Commerce.Persistence.Repositories
         {
             return await _dbContext.Set<TEntity>().AsNoTracking().ToListAsync();
         }
-        public async Task<int> CountAsync(ISpecification<TEntity> specification)
+        public async Task<int> CountAsync(ISpecification<TEntity, TKey> specification)
         {
             var query = SpecificationEvaluater.CreateCountQuery(_dbContext.Set<TEntity>(), specification);
 
             return await query.CountAsync();
         }
-        public async Task<IEnumerable<TEntity>> GetAllAsync(ISpecification<TEntity> specification)
+        public async Task<IEnumerable<TEntity>> GetAllAsync(ISpecification<TEntity, TKey> specification)
         {
             var query = SpecificationEvaluater.CreateQuery(_dbContext.Set<TEntity>(), specification);
 
             return await query.AsNoTracking().ToListAsync();
         }
 
-        public async Task<TEntity> GetByIdAsync(Guid id)
+        public async Task<TEntity> GetByIdAsync(TKey id)
         {
-            return (await _dbContext.Set<TEntity>().FirstOrDefaultAsync(e => e.Id == id))!;
+            return (await _dbContext.Set<TEntity>().FirstOrDefaultAsync(e => e.Id!.Equals(id)))!;
         }
-        public async Task<TEntity> GetByIdAsync(ISpecification<TEntity> specification)
+        public async Task<TEntity> GetByIdAsync(ISpecification<TEntity, TKey> specification)
         {
             var query = SpecificationEvaluater.CreateQuery(_dbContext.Set<TEntity>(), specification);
 

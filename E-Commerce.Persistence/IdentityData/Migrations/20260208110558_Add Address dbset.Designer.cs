@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E_Commerce.Persistence.IdentityData.Migrations
 {
     [DbContext(typeof(StoreIdentityDbContext))]
-    [Migration("20251130114319_Identity Init")]
-    partial class IdentityInit
+    [Migration("20260208110558_Add Address dbset")]
+    partial class AddAddressdbset
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

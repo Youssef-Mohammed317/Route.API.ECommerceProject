@@ -18,7 +18,8 @@ namespace E_Commerce.Service.Abstraction.Interfaces
 
         Task<Result<IEnumerable<ProductTypeDTO>>> GetAllProductTypesAsync();
 
-        Task<Result<ProductDTO>> GetProductByIdAsync(Guid id);
+        Task<Result<ProductDTO>> GetProductByIdAsync(int id);
     }
+
 
 }

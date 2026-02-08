@@ -3,14 +3,16 @@ using E_Commerce.Api.Factories;
 using E_Commerce.Api.Middleware;
 using E_Commerce.Domian.Entites.IdentityModule;
 using E_Commerce.Domian.Interfaces;
+using E_Commerce.Domian.Interfaces.Identity;
 using E_Commerce.Persistence.Data.DbContexts;
-using E_Commerce.Persistence.Data.Migrations;
 using E_Commerce.Persistence.Data.SeedData;
 using E_Commerce.Persistence.IdentityData.DbContexts;
 using E_Commerce.Persistence.IdentityData.SeedData;
 using E_Commerce.Persistence.Repositories;
+using E_Commerce.Persistence.Repositories.Idenitity;
 using E_Commerce.Presentation.Api.Extensions;
 using E_Commerce.Service.Abstraction.Interfaces;
+using E_Commerce.Service.Implementation.MappingProfiles.OrderModule;
 using E_Commerce.Service.Implementation.MappingProfiles.ProductModule;
 using E_Commerce.Service.Implementation.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -83,11 +85,15 @@ namespace E_Commerce.Presentation.Api
             builder.Services.AddScoped<ICacheRepository, CacheRepository>();
             builder.Services.AddScoped<ICacheService, CacheService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
+            builder.Services.AddScoped<IPaymentService, PaymentService>();
+            builder.Services.AddScoped<IAddressRepository, AddressRepository>();
             builder.Services.AddAutoMapper(config =>
             {
                 config.AddMaps(typeof(ProductModuleProfile).Assembly);
             });
             builder.Services.AddTransient<ProductPictureUrlResolver>();
+            builder.Services.AddTransient<OrderItemPictureUrlResolver>();
             builder.Services.Configure<ApiBehaviorOptions>(options =>
             {
                 //options.SuppressModelStateInvalidFilter = true;
@@ -124,7 +130,15 @@ namespace E_Commerce.Presentation.Api
 
             #endregion
 
-
+            #region Angular
+            builder.Services.AddCors(op =>
+            {
+                op.AddPolicy("AllowAll", builder =>
+                {
+                    builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+                });
+            });
+            #endregion
 
             var app = builder.Build();
 
@@ -145,19 +159,23 @@ namespace E_Commerce.Presentation.Api
                 app.UseSwaggerUI();
             }
 
-            app.UseMiddleware<ExceptionHandlerMiddleware>();
+            //app.UseMiddleware<ExceptionHandlerMiddleware>();
 
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
 
+            app.UseCors("AllowAll");
+
+
             app.UseAuthorization();
 
             app.UseStaticFiles();
 
+
             app.MapControllers();
 
-            app.Run();
+            await app.RunAsync();
         }
     }
 }

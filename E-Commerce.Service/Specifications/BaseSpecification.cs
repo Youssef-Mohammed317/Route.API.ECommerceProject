@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace E_Commerce.Service.Implementation.Specifications
 {
-    public abstract class BaseSpecification<TEntity> : ISpecification<TEntity> where TEntity : BaseEntity
+    public abstract class BaseSpecification<TEntity, TKey> : ISpecification<TEntity, TKey> where TEntity : BaseEntity<TKey>
     {
         public ICollection<Expression<Func<TEntity, object>>> IncludesExpressions { get; } = [];
         public Expression<Func<TEntity, bool>> CriteriaExpression { get; }

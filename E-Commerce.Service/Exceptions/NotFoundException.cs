@@ -14,13 +14,13 @@ namespace E_Commerce.Service.Implementation.Exceptions
     }
     public sealed class ProductNotFoundException : NotFoundException
     {
-        public ProductNotFoundException(Guid id) : base($"Product with Id {id} was not found.")
+        public ProductNotFoundException(int id) : base($"Product with Id {id} was not found.")
         {
         }
     }
     public sealed class BasketNotFoundException : NotFoundException
     {
-        public BasketNotFoundException(Guid id) : base($"Basket with Id {id} was not found.")
+        public BasketNotFoundException(int id) : base($"Basket with Id {id} was not found.")
         {
         }
     }

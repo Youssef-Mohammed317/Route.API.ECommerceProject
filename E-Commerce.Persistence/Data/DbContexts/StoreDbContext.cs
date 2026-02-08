@@ -1,4 +1,5 @@
-﻿using E_Commerce.Domian.Entites.ProductModule;
+﻿using E_Commerce.Domian.Entites.OrderModule;
+using E_Commerce.Domian.Entites.ProductModule;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -35,13 +36,16 @@ namespace E_Commerce.Persistence.Data.DbContexts
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductBrand> ProductBrands { get; set; }
         public DbSet<ProductType> ProductTypes { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<DeliveryMethod> DeliveryMethods
+        {
+            get; set;
+        }
         #endregion
 
-        #region MyRegion
-
         #endregion
 
-        #endregion
 
     }
 }

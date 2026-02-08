@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace E_Commerce.Domian.Entites.BasketModule
 {
-    public class BasketItem 
+    public class BasketItem : BaseEntity<int>
     {
-        public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public decimal Price { get; set; }
         public string PictureUrl { get; set; } = string.Empty;

@@ -9,10 +9,10 @@ namespace E_Commerce.Shared.DTOs.ProductDTOs
     public class ProductQueryParams
     {
         public string? Search { get; set; }
-        public Guid? BrandId { get; set; }
-        public Guid? TypeId { get; set; }
+        public int? BrandId { get; set; } // int
+        public int? TypeId { get; set; } // int
         public ProductSortOptions? Sort { get; set; }
         public int PageSize { get; set; } = 10;
-        public int Page { get; set; } = 1;
+        public int PageIndex { get; set; } = 1;
     }
 }

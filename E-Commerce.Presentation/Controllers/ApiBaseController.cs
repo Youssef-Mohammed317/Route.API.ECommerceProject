@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -62,7 +63,11 @@ namespace E_Commerce.Presentation.Controllers
 
             return StatusCode(problem.Status.Value, problem);
         }
+        protected string GetEmailFromToken()
+        {
+            return User.FindFirstValue(ClaimTypes.Email)!;
 
+        }
 
         private static int MapStatusCode(ErrorType type)
         {

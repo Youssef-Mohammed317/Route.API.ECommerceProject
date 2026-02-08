@@ -25,7 +25,7 @@ namespace E_Commerce.Persistence.Repositories
             return await _dbContext.SaveChangesAsync();
         }
 
-        public IGenericRepository<TEntity> GetRepository<TEntity>() where TEntity : BaseEntity
+        public IGenericRepository<TEntity, TKey> GetRepository<TEntity, TKey>() where TEntity : BaseEntity<TKey>
         {
             var key = typeof(TEntity);
 
@@ -33,10 +33,10 @@ namespace E_Commerce.Persistence.Repositories
 
             if (repository == null || flag == false)
             {
-                repository = new GenericRepository<TEntity>(_dbContext);
+                repository = new GenericRepository<TEntity, TKey>(_dbContext);
                 _repositories.Add(key, repository);
             }
-            return (IGenericRepository<TEntity>)repository;
+            return (IGenericRepository<TEntity, TKey>)repository;
         }
 
 

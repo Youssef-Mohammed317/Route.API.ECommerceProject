@@ -9,15 +9,15 @@ namespace E_Commerce.Shared.DTOs.ProductDTOs
 {
     public class ProductDTO
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; } // need to be int
         public string Name { get; set; } = null!;
         public string Description { get; set; } = null!;
         public decimal Price { get; set; }
         public string PictureUrl { get; set; } = null!;
         public string PictureName { get; set; } = null!;
-        public Guid ProductBrandId { get; set; }
+        public int ProductBrandId { get; set; }
         public string ProductBrand { get; set; } = null!;
-        public Guid ProductTypeId { get; set; }
+        public int ProductTypeId { get; set; }
         public string ProductType { get; set; } = null!;
 
     }

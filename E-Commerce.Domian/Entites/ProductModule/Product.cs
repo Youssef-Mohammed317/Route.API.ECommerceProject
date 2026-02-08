@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace E_Commerce.Domian.Entites.ProductModule
 {
-    public class Product : BaseEntity
+    public class Product : BaseEntity<int>
     {
         public string Name { get; set; } = null!;
         public string Description { get; set; } = null!;
@@ -17,13 +17,13 @@ namespace E_Commerce.Domian.Entites.ProductModule
 
         #region Relations
         [ForeignKey(nameof(ProductBrand))]
-        public Guid ProductBrandId { get; set; }
+        public int ProductBrandId { get; set; }
 
         public virtual ProductBrand ProductBrand { get; set; } = null!;
 
 
         [ForeignKey(nameof(ProductType))]
-        public Guid ProductTypeId { get; set; }
+        public int ProductTypeId { get; set; }
 
         public virtual ProductType ProductType { get; set; } = null!;
         #endregion

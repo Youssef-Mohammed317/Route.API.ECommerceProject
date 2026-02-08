@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 
 namespace E_Commerce.Presentation.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
+   
     public class BasketController : ApiBaseController
     {
         private readonly IBasketService _basketService;
@@ -19,6 +18,7 @@ namespace E_Commerce.Presentation.Controllers
         }
 
         [HttpGet("{id:guid}")]
+        
         public async Task<IActionResult> GetBasketById([FromRoute] Guid id)
         {
             var result = await _basketService.GetBasketAsync(id);

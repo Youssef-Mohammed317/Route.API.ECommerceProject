@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace E_Commerce.Persistence.IdentityData.Migrations
 {
     /// <inheritdoc />
-    public partial class IdentityInit : Migration
+    public partial class ReCreateTheDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

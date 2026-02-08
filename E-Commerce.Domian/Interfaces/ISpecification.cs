@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace E_Commerce.Domian.Interfaces
 {
-    public interface ISpecification<TEntity> where TEntity : BaseEntity
+    public interface ISpecification<TEntity, Tkey> where TEntity : BaseEntity<Tkey>
     {
         public ICollection<Expression<Func<TEntity, object>>> IncludesExpressions { get; }
         public Expression<Func<TEntity, bool>> CriteriaExpression { get; }

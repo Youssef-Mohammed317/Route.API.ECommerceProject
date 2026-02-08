@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace E_Commerce.Domian.Entites
 {
-    public abstract class BaseEntity
+    public abstract class BaseEntity<TKey>
     {
         [Key]
-        public Guid Id { get; set; }
+        public TKey Id { get; set; }
     }
 }

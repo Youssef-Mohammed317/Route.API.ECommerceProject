@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace E_Commerce.Service.Implementation.Specifications
 {
-    public class ProductWithBrandAndTypeSpecification : BaseSpecification<Product>
+    public class ProductWithBrandAndTypeSpecification : BaseSpecification<Product, int>
     {
         public ProductWithBrandAndTypeSpecification(ProductQueryParams productQueryParams) :
             base(ProductSpecificationHelper.GetProductCriteria(productQueryParams))
@@ -35,9 +35,9 @@ namespace E_Commerce.Service.Implementation.Specifications
                     break;
             }
 
-            ApplyPagination(productQueryParams.PageSize, productQueryParams.Page);
+            ApplyPagination(productQueryParams.PageSize, productQueryParams.PageIndex);
         }
-        public ProductWithBrandAndTypeSpecification(Guid id) : base(e => e.Id == id)
+        public ProductWithBrandAndTypeSpecification(int id) : base(e => e.Id == id)
         {
             AddInclude(e => e.ProductBrand);
             AddInclude(e => e.ProductType);

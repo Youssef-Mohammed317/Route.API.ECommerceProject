@@ -11,39 +11,38 @@ using System.Threading.Tasks;
 
 namespace E_Commerce.Presentation.Controllers
 {
-    public class ProductController : ApiBaseController
+    public class ProductsController : ApiBaseController
     {
         private readonly IProductService _productService;
 
-        public ProductController(IProductService productService)
+        public ProductsController(IProductService productService)
         {
             _productService = productService;
         }
         [HttpGet]
-        [RedisCache(15)]
-        [Authorize]
+        //[RedisCache(15)]
         public async Task<IActionResult> GetAllProducts([FromQuery] ProductQueryParams productQueryParams)
         {
             var products = await _productService.GetAllProductsAsync(productQueryParams);
             return FromResult(products);
         }
         [HttpGet("Brands")]
-        [RedisCache]
+        //[RedisCache]
         public async Task<IActionResult> GetAllProductBrands()
         {
             var brands = await _productService.GetAllProductBrandsAsync();
             return FromResult(brands);
         }
         [HttpGet("Types")]
-        [RedisCache]
+        //[RedisCache]
         public async Task<IActionResult> GetAllProductTypes()
         {
             var types = await _productService.GetAllProductTypesAsync();
             return FromResult(types);
         }
-        [HttpGet("{id:guid}")]
-        [RedisCache]
-        public async Task<IActionResult> GetProductById([FromRoute] Guid id)
+        [HttpGet("{id:int}")]
+        //[RedisCache]
+        public async Task<IActionResult> GetProductById([FromRoute] int id)
         {
             var product = await _productService.GetProductByIdAsync(id);
 

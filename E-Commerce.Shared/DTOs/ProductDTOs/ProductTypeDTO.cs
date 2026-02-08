@@ -8,7 +8,7 @@ namespace E_Commerce.Shared.DTOs.ProductDTOs
 {
     public class ProductTypeDTO
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; } // int
         public string Name { get; set; } = null!;
 
         public ICollection<ProductDTO> Products { get; set; } = new List<ProductDTO>();

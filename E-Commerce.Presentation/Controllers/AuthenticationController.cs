@@ -1,6 +1,7 @@
 ﻿using E_Commerce.Service.Abstraction.Interfaces;
 using E_Commerce.Shared.Common;
 using E_Commerce.Shared.DTOs.AuthDTOs;
+using E_Commerce.Shared.DTOs.OrderDTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -10,11 +11,11 @@ namespace E_Commerce.Presentation.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AuthController : ApiBaseController
+    public class AuthenticationController : ApiBaseController
     {
         private readonly IAuthService _authService;
 
-        public AuthController(IAuthService authService)
+        public AuthenticationController(IAuthService authService)
         {
             _authService = authService;
         }
@@ -45,20 +46,38 @@ namespace E_Commerce.Presentation.Controllers
         public async Task<IActionResult> GetCurrentUser()
         {
 
-            var email = User.FindFirstValue(ClaimTypes.Email);
-            if (email == null)
-            {
-                return Unauthorized();
-            }
-            var result = await _authService.GetUserByEmail(email);
+            var result = await _authService.GetUserByEmail(GetEmailFromToken());
             return FromResult(result);
         }
         [HttpGet("emailExists")]
         public async Task<IActionResult> CheckEmailExists([FromQuery] string email)
         {
             var result = await _authService.CheckEmailExist(email);
+            return Ok(result.Value);
+            //return FromResult(result);
+        }
+        [HttpGet("address")]
+        [Authorize]
+        public async Task<IActionResult> GetAddress()
+        {
+
+            var result = await _authService.GetCurrentUserAddress(GetEmailFromToken());
+            return FromResult(result);
+
+        }
+        [Authorize]
+        [HttpPut("address")]
+        public async Task<IActionResult> UpdateAddress(ShippingAddressDto shippingAddressDto)
+        {
+            var result = await _authService.CreateOrUpdateAddresss(shippingAddressDto, GetEmailFromToken());
             return FromResult(result);
         }
-
+        [Authorize]
+        [HttpPost("address")]
+        public async Task<IActionResult> CreateAddress(ShippingAddressDto shippingAddressDto)
+        {
+            var result = await _authService.CreateOrUpdateAddresss(shippingAddressDto, GetEmailFromToken());
+            return FromResult(result);
+        }
     }
 }

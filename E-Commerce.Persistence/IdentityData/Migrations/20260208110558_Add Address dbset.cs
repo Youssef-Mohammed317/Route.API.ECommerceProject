@@ -5,7 +5,7 @@
 namespace E_Commerce.Persistence.IdentityData.Migrations
 {
     /// <inheritdoc />
-    public partial class IdentityInit2 : Migration
+    public partial class AddAddressdbset : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

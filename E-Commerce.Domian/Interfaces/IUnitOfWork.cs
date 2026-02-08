@@ -1,4 +1,5 @@
 ﻿using E_Commerce.Domian.Entites;
+using E_Commerce.Domian.Interfaces.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,6 @@ namespace E_Commerce.Domian.Interfaces
     public interface IUnitOfWork
     {
         Task<int> SaveChangesAsync();
-        IGenericRepository<TEntity> GetRepository<TEntity>() where TEntity : BaseEntity;
+        IGenericRepository<TEntity, TKey> GetRepository<TEntity, TKey>() where TEntity : BaseEntity<TKey>;
     }
 }

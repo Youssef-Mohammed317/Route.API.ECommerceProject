@@ -12,8 +12,8 @@ namespace E_Commerce.Persistence
 {
     public static class SpecificationEvaluater
     {
-        public static IQueryable<TEntity> CreateQuery<TEntity>(IQueryable<TEntity> EntryPoint,
-            ISpecification<TEntity> specification) where TEntity : BaseEntity
+        public static IQueryable<TEntity> CreateQuery<TEntity, TKey>(IQueryable<TEntity> EntryPoint,
+            ISpecification<TEntity, TKey> specification) where TEntity : BaseEntity<TKey>
         {
             var query = EntryPoint;
 
@@ -46,8 +46,8 @@ namespace E_Commerce.Persistence
 
             return query;
         }
-        public static IQueryable<TEntity> CreateCountQuery<TEntity>(IQueryable<TEntity> EntryPoint,
-            ISpecification<TEntity> specification) where TEntity : BaseEntity
+        public static IQueryable<TEntity> CreateCountQuery<TEntity, TKey>(IQueryable<TEntity> EntryPoint,
+            ISpecification<TEntity, TKey> specification) where TEntity : BaseEntity<TKey>
         {
             var query = EntryPoint;
 

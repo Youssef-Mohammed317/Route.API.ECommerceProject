@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace E_Commerce.Domian.Entites.ProductModule
 {
-    public class ProductBrand : BaseEntity
+    public class ProductBrand : BaseEntity<int>
     {
         public string Name { get; set; } = null!;
         public virtual ICollection<Product> Products { get; set; } = new List<Product>();
