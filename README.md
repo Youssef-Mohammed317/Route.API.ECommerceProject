@@ -8,6 +8,12 @@ This project demonstrates a professional approach to building scalable, maintain
 
 ---
 
+## 📸 Swagger Preview
+
+![Swagger Screenshot](./docs/swagger.png)
+
+---
+
 ## 🏗 Architecture (Onion Architecture – 7 Layers)
 
 - **Domain:** Entities and repository interfaces  
